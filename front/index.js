@@ -42,18 +42,35 @@ webSocket.onerror = function (error) {
 };
 
 document.getElementById('send').addEventListener('click', function () {
-    if (!pseudo) {
-        alert("Veuillez entrer un pseudo !");
-        return;
-    }
-
-    const messageInput = document.getElementById('message');
-    const message = messageInput.value.trim();
-    
-    if (message) {
-        webSocket.send(JSON.stringify({ sender: pseudo, message: message, color: color }));
-        messageInput.value = '';
-    }
+  sendMessage();
 });
+
+document.getElementById('initialize').addEventListener('click', initializeUser);
+
+document.getElementById('pseudo').addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+      initializeUser();
+  }
+});
+document.getElementById('message').addEventListener('keydown', function (event) {
+  if (event.key === 'Enter') {
+      sendMessage();
+  }
+});
+
+function sendMessage() {
+  if (!pseudo) {
+      alert("Veuillez entrer un pseudo !");
+      return;
+  }
+
+  const messageInput = document.getElementById('message');
+  const message = messageInput.value.trim();
+  
+  if (message) {
+      webSocket.send(JSON.stringify({ sender: pseudo, message: message, color: color }));
+      messageInput.value = '';
+  }
+}
 
 document.getElementById('initialize').addEventListener('click', initializeUser);
