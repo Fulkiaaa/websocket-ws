@@ -20,7 +20,7 @@ function initializeUser() {
 
     color = getRandomColor();
 
-    document.getElementById('messages').innerHTML += `<b style="color:${color}">${pseudo}:</b> Vous êtes maintenant connecté.<br>`;
+    document.getElementById('messages').innerHTML += `Vous êtes maintenant connecté en tant que <b style="color:${color}">${pseudo}</b>.<br>`;
 
     document.getElementById('initialization').style.display = 'none';
     document.getElementById('form').style.display = 'block';
