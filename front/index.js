@@ -26,10 +26,30 @@ function initializeUser() {
     document.getElementById('form').style.display = 'block';
 }
 
+function sendMessage() {
+    if (!pseudo) {
+        alert("Veuillez entrer un pseudo !");
+        return;
+    }
+
+    const messageInput = document.getElementById('message');
+    const message = messageInput.value.trim();
+    
+    if (message) {
+        webSocket.send(JSON.stringify({ sender: pseudo, message: message, color: color }));
+        messageInput.value = '';
+    }
+}
+
 webSocket.onmessage = function (event) {
-    const { sender, message, color } = JSON.parse(event.data);
-    document.getElementById('messages').innerHTML += 
-      `<b style="color:${color}">${sender}:</b> ${message}<br>`;
+    const { sender, message, color, type } = JSON.parse(event.data);
+
+    if (type === 'welcome' || type === 'announcement') {
+        document.getElementById('messages').innerHTML += `<b style="color:${color}">${sender}:</b> ${message}<br>`;
+    } else {
+        document.getElementById('messages').innerHTML += `<b style="color:${color}">${sender}:</b> ${message}<br>`;
+    }
+
     document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
 };
 
@@ -41,36 +61,33 @@ webSocket.onerror = function (error) {
     console.error("WebSocket error: ", error);
 };
 
+webSocket.onclose = function (event) {
+    if (!event.wasClean) {
+        document.getElementById('messages').innerHTML += `<b style="color:#000000">Server:</b> La connexion a été perdue.<br>`;
+    }
+};
+
 document.getElementById('send').addEventListener('click', function () {
-  sendMessage();
+    sendMessage();
 });
 
 document.getElementById('initialize').addEventListener('click', initializeUser);
 
 document.getElementById('pseudo').addEventListener('keydown', function (event) {
-  if (event.key === 'Enter') {
-      initializeUser();
-  }
+    if (event.key === 'Enter') {
+        initializeUser();
+    }
 });
+
 document.getElementById('message').addEventListener('keydown', function (event) {
-  if (event.key === 'Enter') {
-      sendMessage();
-  }
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
 });
 
-function sendMessage() {
-  if (!pseudo) {
-      alert("Veuillez entrer un pseudo !");
-      return;
-  }
-
-  const messageInput = document.getElementById('message');
-  const message = messageInput.value.trim();
-  
-  if (message) {
-      webSocket.send(JSON.stringify({ sender: pseudo, message: message, color: color }));
-      messageInput.value = '';
-  }
-}
-
-document.getElementById('initialize').addEventListener('click', initializeUser);
+document.getElementById('disconnect').addEventListener('click', function () {
+    webSocket.close();
+    document.getElementById('messages').innerHTML += `<b style="color:#000000">Server:</b> Vous avez été déconnecté.<br>`;
+    document.getElementById('initialization').style.display = 'block';
+    document.getElementById('form').style.display = 'none';
+});
