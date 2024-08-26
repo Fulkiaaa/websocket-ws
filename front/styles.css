@@ -71,3 +71,7 @@ button:hover {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
+#emoji-button {
+    margin: 5px 0 0;
+    border-radius: 0 5px 5px 0;
+}
