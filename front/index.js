@@ -24,6 +24,8 @@ function initializeUser() {
 
     document.getElementById('initialization').style.display = 'none';
     document.getElementById('form').style.display = 'block';
+
+    webSocket.send(JSON.stringify({ type: 'join', sender: pseudo, color: color }));
 }
 
 function sendMessage() {
@@ -86,6 +88,7 @@ document.getElementById('message').addEventListener('keydown', function (event) 
 });
 
 document.getElementById('disconnect').addEventListener('click', function () {
+    webSocket.send(JSON.stringify({ type: 'leave', sender: pseudo, color: color }));
     webSocket.close();
     document.getElementById('messages').innerHTML += `<b style="color:#000000">Server:</b> Vous avez été déconnecté.<br>`;
     document.getElementById('initialization').style.display = 'block';
